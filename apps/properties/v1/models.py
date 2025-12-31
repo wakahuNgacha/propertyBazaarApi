@@ -3,6 +3,8 @@ from apps.core.v1.models import PropertyType, PropertyUse, Channel, Relationship
 from apps.users.v1.models import User
 
 # Create your models here.
+#TODO title number to ensure only unique properties are added 
+#  example( marmanet/ north rumuruti block 2/ 8419 (Ndurumo))
 
 class Property(models.Model):
     PROPERTY_MODE_CHOICES = [
