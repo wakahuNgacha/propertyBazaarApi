@@ -33,7 +33,7 @@ class Property(models.Model):
         ('pendingSubdivision', 'Pending Subdivision'),
         ('leaseRegistered', 'Lease Registered'),
     ]
-
+    title_number = models.CharField(max_length=200)
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     description = models.TextField()
@@ -53,8 +53,21 @@ class Property(models.Model):
     def __str__(self):
         return self.title
 
+# like parking, wifi, cctv
+class Feature(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    icon  = models.URLField()
+    count = models.IntegerField()
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+    
+
+# like church market
 class Amenity(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    icon  = models.URLField()
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -65,8 +78,14 @@ class PropertyAmenities(models.Model):
     amenity = models.ForeignKey(Amenity, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.feature_name}: {self.feature_value}"
+        return f"{self.amenity.name}"
     
+class PropertyFeatures(models.Model):
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='features')
+    feature = models.ForeignKey(Feature, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.feature.name}: {self.feature.count}"
 
 class PropertyLocation(models.Model):
     property = models.OneToOneField(Property, on_delete=models.CASCADE, related_name='location')
