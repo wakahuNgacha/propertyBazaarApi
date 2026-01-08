@@ -74,14 +74,14 @@ class Amenity(models.Model):
         return self.name
     
 class PropertyAmenities(models.Model):
-    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='features')
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='property_amenities')
     amenity = models.ForeignKey(Amenity, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.amenity.name}"
     
 class PropertyFeatures(models.Model):
-    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='features')
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='property_features')
     feature = models.ForeignKey(Feature, on_delete=models.CASCADE)
 
     def __str__(self):

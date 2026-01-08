@@ -19,19 +19,20 @@ class Revenue(models.Model):
         ('mpesa', 'Mpesa'),
         ('bank', 'Bank')
     ]
-    sales_case = models.ForeignKey(SalesCase, on_delete=models.CASCADE, related_name='sales case')
+    sales_case = models.ForeignKey(SalesCase, on_delete=models.CASCADE, related_name='revenue_from_sales_case')
     revenue_type = models.CharField(max_length=30, choices=REVENUE_TYPE_CHOICES, default='commission')
-    amount = models.DecimalField()
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
     currency = models.CharField(max_length=10, default='KSH')
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='expected')
     reference_number = models.CharField(max_length=100)
     received_at  = models.DateTimeField()
-    created_at = models.DateField(auto_created=True)
-    updated_by = models.ForeignKey(User, related_name='updated by')
-    updated_at = models.DateTimeField(auto_created=True)
+    created_at = models.DateField(auto_now=True)
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='updated_by')
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return 'revenue of ' + self.amount +'amount'
+        return f"Revenue {self.amount} {self.currency}"
+
 
 class Expense(models.Model):
     EXPENSE_TYPE_CHOICE = [
@@ -49,14 +50,15 @@ class Expense(models.Model):
     ]
     expense_type = models.CharField(max_length=30, choices=EXPENSE_TYPE_CHOICE)
     payment_method = models.CharField(max_length=30, choices=PAYMENT_METHOD_CHOICE)
-    amount = models.DecimalField()
-    related_sale = models.ForeignKey(SalesCase, related_name='sales case')
-    related_campaign = models.ForeignKey(Campaign, related_name='campaign')
-    paid_to = models.ForeignKey(User, related_name='paid to')
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    related_sale = models.ForeignKey(SalesCase, on_delete=models.CASCADE, related_name='sales_case')
+    related_campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='campaign')
+    paid_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='paid_to')
     transaction_ref = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_created=True)
-    created_by = models.ForeignKey(User, related_name='created by')
+    created_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_by')
     notes = models.TextField()
 
     def __str__(self):
-        return 'Expense of' + self.amount + ' made to'
+        return f"Expense of {self.amount} made to"
+

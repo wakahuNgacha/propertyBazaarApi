@@ -21,15 +21,15 @@ class Lead(models.Model):
     client_phone = models.CharField(max_length=15, unique=True)
     client_email = models.EmailField()
     lead_type = models.CharField(max_length=30)
-    source = models.ForeignKey(Channel, on_delete=models.CASCADE, related_name='channel')
-    preferred_location = models.CharField()
-    preferred_property_type = models.ForeignKey(PropertyType, on_delete=models.CASCADE, related_name='property type')
+    source = models.ForeignKey(Channel, on_delete=models.CASCADE, related_name='lead_source_channel')
+    preferred_location = models.CharField(max_length=150)
+    preferred_property_type = models.ForeignKey(PropertyType, on_delete=models.CASCADE, related_name='lead_preferred_property')
     budget_min = models.DecimalField(max_digits=10, decimal_places=2)
     budget_max = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='assigned_to')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
     def __str__(self):
@@ -55,14 +55,14 @@ class Inquiry(models.Model):
         ('converted', 'Converted'),
         ('closed', 'Closed')
     ]
-    lead = models.ForeignKey(Lead, on_delete=models.CASCADE, related_name='lead' )
-    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='property')
+    lead = models.ForeignKey(Lead, on_delete=models.CASCADE, related_name='inquired_from_lead' )
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='property_inquired')
     inquiry_type = models.CharField(max_length=20, choices= INQUIRY_TYPE_CHOICES)
     message = models.TextField()
     urgency_level = models.CharField(max_length=20, choices= URGENCY_LEVEL_CHOICES)
     status = models.CharField(max_length= 20, choices=STATUS_CHOICES)
-    created_at =  models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    created_at =  models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
     def __str__(self):
@@ -82,20 +82,20 @@ class SalesCase (models.Model):
     inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE, related_name='inquiry')
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='property')
     buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='buyer')
-    from_lead = models.ForeignKey(Lead, on_delete=models.CASCADE, related_name='lead')
-    assigned_to = models.ForeignKey(User)
+    from_lead = models.ForeignKey(Lead, on_delete=models.CASCADE, related_name='resulted_from_lead')
+    assigned_to = models.ForeignKey(User, on_delete=models.CASCADE)
     stage = models.CharField(max_length=20, choices=STAGE_CHOICES, default='new')
     expected_price = models.DecimalField(max_digits=10, decimal_places=2)
     agreed_price = models.DecimalField(max_digits=10, decimal_places=2)
     expected_commission = models.DecimalField(max_digits=10, decimal_places=2)
     actual_commission = models.DecimalField(max_digits=10, decimal_places=2)
     closing_date = models.DateField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, related_name='created by')
+    created_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sales_case_creator')
 
     def __str__(self):
-        return 'created by' + self.created_by + 'inquired by' + self.buyer
+        return f"created by {self.created_by} inquired by {self.buyer}"
     
 class FollowUp(models.Model):
     FOLLOWUP_TYPE_CHOICE = [
@@ -104,14 +104,14 @@ class FollowUp(models.Model):
         ('email', 'Email'),
         ('meeting', 'Meeting')
     ]
-    sales_case = models.ForeignKey(SalesCase, on_delete=models.CASCADE, related_name='sales case')
+    sales_case = models.ForeignKey(SalesCase, on_delete=models.CASCADE, related_name='following_up_for_sales_case')
     follow_up_type = models.CharField(max_length=20, choices=FOLLOWUP_TYPE_CHOICE)
     note = models.TextField()
     next_action = models.TextField()
     next_action_date = models.DateField()
     completed  = models.BooleanField()
-    created_by = models.ForeignKey(User)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now=True)
 
 class Offer(models.Model):
     STATUS_CHOICES = [
@@ -120,16 +120,16 @@ class Offer(models.Model):
         ('rejected', 'Rejected'),
         ('countered', 'Countered')
     ]
-    sales_case = models.ForeignKey(SalesCase, on_delete=models.CASCADE, related_name='sales case')
-    made_by = models.ForeignKey(User, related_name='offer made by')
+    sales_case = models.ForeignKey(SalesCase, on_delete=models.CASCADE, related_name='offer_for_sales_case')
+    made_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='offer_made_by')
     offered_price = models.DecimalField(max_digits=10, decimal_places=2)
-    offered_date = models.DateTimeField(auto_now_add=True)
+    offered_date = models.DateTimeField(auto_now=True)
     expiry_at = models.DateTimeField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     notes = models.TextField()
 
     def __str__(self):
-        return 'offer made at' + self.offered_price
+        return f"offer made at {self.offered_price}"
 
 class Referral(models.Model):
     STATUS_CHOICES = [
@@ -137,8 +137,8 @@ class Referral(models.Model):
         ('payable', 'Payable'),
         ('paid', 'Paid'),
     ]
-    sales_case = models.ForeignKey(SalesCase, on_delete=models.CASCADE, related_name='sales case')
-    referrer_user = models.ForeignKey(User, null= True, related_name='referring')
+    sales_case = models.ForeignKey(SalesCase, on_delete=models.CASCADE, related_name='referred_sales_case')
+    referrer_user = models.ForeignKey(User, on_delete=models.CASCADE, null= True, related_name='referring')
     referrer_name = models.CharField(max_length=30)
     referrer_phone = models.CharField(max_length=10)
     referrer_email = models.EmailField(max_length=30)
@@ -146,12 +146,12 @@ class Referral(models.Model):
     referred_client_phone = models.CharField(max_length=10)
     referrer_client_email = models.EmailField(max_length=30)
     commission_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
-    paid_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    paid_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return 'created by' + self.referrer_name
+        return f"created by {self.referrer_name}" 
     
 class SaleClosure (models.Model):
     OUTCOME_CHOICES = [
@@ -163,20 +163,20 @@ class SaleClosure (models.Model):
         ('partial', 'Partial'),
         ('paid', 'Paid')
     ]
-    sales_case = models.Model(SalesCase)
+    sales_case = models.ForeignKey(SalesCase, on_delete=models.CASCADE)
     closing_date = models.DateField()
     outcome = models.CharField(max_length=20, choices=OUTCOME_CHOICES)
     lose_reason = models.TextField()
     payment_status = models.CharField(max_length=30, choices=PAYMENT_STATUS_CHOICES)
     documents_completed = models.BooleanField()
     document = models.URLField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User)
-    updated_at = models.DateTimeField(auto_now_add=True)
-    paid_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User,on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(auto_now=True)
+    paid_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return 'Sale closure of' + self.sales_case.property
+        return f"Sale closure of {self.sales_case.property}" 
     
 class PostSaleTask (models.Model):
     TASK_TYPE_CHOICES = [
@@ -189,8 +189,8 @@ class PostSaleTask (models.Model):
         ('inProgress', 'In Progress'),
         ('completed', 'Completed')
     ]
-    sales_closure = models.ForeignKey(SaleClosure)
+    sales_closure = models.ForeignKey(SaleClosure, on_delete=models.CASCADE)
     task_type = models.CharField(max_length=30, choices=TASK_TYPE_CHOICES)
-    assigned_to = models.ForeignKey(User, related_name='assignee')
+    assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assignee')
     status = models.CharField(max_length=30, choices=STATUS_CHOICES)
     due_date = models.DateField()
