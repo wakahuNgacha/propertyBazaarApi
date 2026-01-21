@@ -4,6 +4,11 @@ from apps.core.v1.models import PropertyType, PropertyUse, Channel, Relationship
 # Create your models here.
 
 class User(models.Model):
+    # same page
+    # Admin page: admin, finance, sales 
+    # BUyer: buyer, owner, ReferralAgent
+    # Broker: broker
+    # Partner: partner
     ROLE_CHOICES = [
         ('admin', 'Admin'),
         ('buyer', 'Buyer'),
