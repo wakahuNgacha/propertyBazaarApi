@@ -1,5 +1,38 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
 from .models import *
+from django.contrib.auth.hashers import make_password, check_password
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=False, allow_blank=True)
+    phone = serializers.CharField(max_length=15, required=False, allow_blank=True)
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        email = data.get('email')
+        phone = data.get('phone')
+        password = data.get('password')
+
+        if not email and not phone:
+            raise serializers.ValidationError("Please provide either email or phone number.")
+
+        try:
+            if email:
+                user = User.objects.get(email=email)
+            else:
+                user = User.objects.get(phone=phone)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("Invalid credentials.")
+
+        if not user.is_active:
+            raise serializers.ValidationError("User account is inactive.")
+
+        if not check_password(password, user.password):
+            raise serializers.ValidationError("Invalid credentials.")
+
+        data['user'] = user
+        return data
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,7 +66,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         password = validated_data.pop('password')
         user = User(**validated_data)
-        user.set_password(password)
+        user.password = make_password(password)
+        # user.set_password(password)
         user.save()
         return user
 

@@ -7,11 +7,11 @@ from apps.core.v1.models import Channel, Tag, PropertyType
 class Campaign(models.Model):
     STATUS_CHOICES = [
         ('draft', 'Draft'),
-        ('Planned', 'Planned'),  
-        ('Active', 'Active'),
-        ('Paused', 'Paused'),  
-        ('Completed', 'Completed'),
-        ('Cancelled', 'Cancelled'),
+        ('planned', 'Planned'),  
+        ('active', 'Active'),
+        ('paused', 'Paused'),  
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
     ]
     TYPE_CHOICES = [
         # promotional when it's linked to a property sale so the measure of success is tied to the sale
@@ -36,6 +36,7 @@ class Campaign(models.Model):
     def __str__(self):
         return self.name
 
+#For the campaign after it is done
 class CampaignPerformanceMetric(models.Model):
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='performance_metrics')
     metric_name = models.CharField(max_length=100)

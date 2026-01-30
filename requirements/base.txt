@@ -2,6 +2,7 @@ asgiref==3.11.0
 Django==6.0
 django-cors-headers==4.9.0
 djangorestframework==3.16.1
+djangorestframework-simplejwt==5.3.2
 environ==1.0
 factory_boy==3.3.3
 Faker==40.1.0

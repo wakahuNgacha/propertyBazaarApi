@@ -7,6 +7,12 @@ from apps.users.v1.models import User
 #  example( marmanet/ north rumuruti block 2/ 8419 (Ndurumo))
 
 class Property(models.Model):
+    PROPERTY_TYPE_CHOICES =[
+        ('homes', 'Homes'),
+        ('apartments', 'Apartments'),
+        ('plots', 'Plots'),
+        ('ranches', 'Ranches')
+    ]
     PROPERTY_MODE_CHOICES = [
         ('single', 'Single'),
         ('project', 'Project'),
@@ -37,7 +43,7 @@ class Property(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     description = models.TextField()
-    property_type = models.ForeignKey(PropertyType, on_delete=models.SET_NULL, null=True)
+    property_type = models.ForeignKey(PropertyType, on_delete=models.CASCADE)
     property_use = models.ForeignKey(PropertyUse, on_delete=models.SET_NULL, null=True)
     property_mode = models.CharField(max_length=20, choices=PROPERTY_MODE_CHOICES)
     price = models.DecimalField(max_digits=12, decimal_places=2)
@@ -145,7 +151,7 @@ class Building(models.Model):
     bathrooms = models.IntegerField()
     parking_spaces = models.IntegerField()
     year_built = models.IntegerField(blank=True, null=True)
-    construction_status = models.CharField(max_length=100, blank=True, null=True)
+    construction_status = models.CharField(max_length=100, choices=CONSTRUCTION_STATUS_CHOICES)
 
     def __str__(self):
         return f"Building details for {self.property.title}"
@@ -155,7 +161,7 @@ class Project(models.Model):
     total_units = models.IntegerField()
     ongoing_units = models.IntegerField(default=0)
     available_units = models.IntegerField(default=0)
-    description = models.TextField()
+    # description = models.TextField()
     start_date = models.DateField()
     expected_completion_date = models.DateField()
     actual_completion_date = models.DateField(blank=True, null=True)
