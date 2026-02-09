@@ -92,7 +92,7 @@ class Content(models.Model):
 class BlogPostContent(models.Model):
     content = models.OneToOneField(Content, on_delete=models.CASCADE, related_name='blog_post_content')
     body = models.TextField()
-    reading_time_minutes = models.IntegerField()
+    reading_time = models.IntegerField()
     likes = models.IntegerField(default=0)
     shares = models.IntegerField(default=0)
     author = models.CharField(max_length=255)

@@ -38,14 +38,17 @@ class User(models.Model):
     def __str__(self):
         return self.email
     
+
+# TODO
 class Client(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='clients')
     preferred_property_type = models.ForeignKey(PropertyType, on_delete=models.SET_NULL, null=True)
     preferred_use = models.ForeignKey(PropertyUse, on_delete=models.SET_NULL, null=True)
-    preferred_channel = models.ForeignKey(Channel, on_delete=models.SET_NULL, null=True)
+    preferred_channel = models.ForeignKey(Channel, on_delete=models.SET_NULL, null=True, related_name='Channel')
     relationship_status = models.ForeignKey(RelationshipStatus, on_delete=models.SET_NULL, null=True)
     location_preferences = models.TextField()    
-    budget_range = models.CharField(max_length=50)
+    budget_range_min = models.CharField(max_length=50)
+    budget_range_max = models.CharField(max_length=50)
     urgency_level = models.CharField(max_length=50)
     min_land_size = models.FloatField()
     max_land_size = models.FloatField()
@@ -55,7 +58,7 @@ class Client(models.Model):
     house_bathrooms_min = models.IntegerField()
     house_bathrooms_max = models.IntegerField()
     conversion_stage = models.CharField(max_length=50)
-    source_of_lead = models.CharField(max_length=100)
+    source_of_lead = models.ForeignKey(Channel, on_delete=models.SET_DEFAULT, default='field', related_name='lead_source')
     last_contacted = models.DateTimeField(null=True, blank=True)
     notes = models.TextField(blank=True, null=True)
 

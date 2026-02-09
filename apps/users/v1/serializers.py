@@ -3,6 +3,17 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import *
 from django.contrib.auth.hashers import make_password, check_password
 
+class AuthUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'first_name',
+            'last_name',
+            'role',
+        ]
+
+
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(required=False, allow_blank=True)
     phone = serializers.CharField(max_length=15, required=False, allow_blank=True)
