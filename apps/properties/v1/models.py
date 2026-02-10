@@ -63,7 +63,6 @@ class Property(models.Model):
 class Feature(models.Model):
     name = models.CharField(max_length=100, unique=True)
     icon  = models.URLField()
-    count = models.IntegerField()
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -89,6 +88,7 @@ class PropertyAmenities(models.Model):
 class PropertyFeatures(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='property_features')
     feature = models.ForeignKey(Feature, on_delete=models.CASCADE)
+    count = models.IntegerField()
 
     def __str__(self):
         return f"{self.feature.name}: {self.feature.count}"
@@ -128,7 +128,6 @@ class PropertyMedia(models.Model):
 class Land(models.Model):
     property = models.OneToOneField(Property, on_delete=models.CASCADE, related_name='land_details')
     plot_size = models.DecimalField(max_digits=10, decimal_places=2)
-    measurement_unit = models.CharField(max_length=50)  # e.g., acres, square meters
     zoning_information = models.TextField(blank=True, null=True)
     soil_type = models.CharField(max_length=100, blank=True, null=True)
     topography = models.CharField(max_length=100, blank=True, null=True)
@@ -145,7 +144,6 @@ class Building(models.Model):
     ]
     property = models.OneToOneField(Property, on_delete=models.CASCADE, related_name='building_details')
     built_up_area = models.DecimalField(max_digits=10, decimal_places=2)
-    measurement_unit = models.CharField(max_length=50)  # e.g., square feet, square meters
     number_of_floors = models.IntegerField()
     bedrooms = models.IntegerField()
     bathrooms = models.IntegerField()

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
-from .models import Property
+from .models import Property, Feature, Amenity, PropertyFeatures, PropertyAmenities
 from .serializers import *
 
 # Create your views here.
@@ -90,6 +90,43 @@ class ProjectUnitCreateView(CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(project_id=self.kwargs["project_id"])
+
+class FeatureListView(ListAPIView):
+    queryset = Feature.objects.all()
+    serializer_class = FeatureSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class FeatureCreateView(CreateAPIView):
+    serializer_class = FeatureSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class AmenityListView(ListAPIView):
+    queryset = Amenity.objects.all()
+    serializer_class = AmenitySerializer
+    permission_classes = [IsAuthenticated]
+
+
+class AmenityCreateView(CreateAPIView):
+    serializer_class = AmenitySerializer
+    permission_classes = [IsAuthenticated]
+
+
+class PropertyFeatureCreateView(CreateAPIView):
+    serializer_class = PropertyFeatureSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(property_id=self.kwargs["property_id"])
+
+
+class PropertyAmenityCreateView(CreateAPIView):
+    serializer_class = PropertyAmenitySerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(property_id=self.kwargs["property_id"])
 
 class BookmarkCreateView(CreateAPIView):
     serializer_class = BookmarkCreateSerializer
