@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "apps.core",
-    "apps.users",
+    "apps.users.v1",
     "apps.properties",
     "apps.mediaAndMarketing",
     "apps.sales",
@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     "apps.finance",
 ]
 
-# AUTH_USER_MODEL = "users.User"
+AUTH_USER_MODEL = "users.v1.User"
 # CORS_ALLOWED_ORIGINS = [
 #     "http://localhost:3000",
 #     "http://127.0.0.1:3000",

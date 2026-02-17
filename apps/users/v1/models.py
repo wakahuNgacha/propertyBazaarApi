@@ -1,15 +1,33 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from apps.core.v1.models import PropertyType, PropertyUse, Channel, RelationshipStatus
-
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    PermissionsMixin,
+    BaseUserManager
+)
+from django.db import models
 # Create your models here.
 
-class User(models.Model):
-    # same page
-    # Admin page: admin, finance, sales 
-    # BUyer: buyer, owner, ReferralAgent
-    # Broker: broker
-    # Partner: partner
+class UserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError("Users must have an email address")
+
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)  # IMPORTANT
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+
+        return self.create_user(email, password, **extra_fields)
+
+
+class User(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = [
         ('admin', 'Admin'),
         ('buyer', 'Buyer'),
@@ -21,22 +39,26 @@ class User(models.Model):
         ('SalesAndMarketing','Sales And Marketing'),
     ]
 
-    phone = models.CharField(max_length=15, unique=True)
     email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=15, unique=True)
+
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
-    password = models.CharField(max_length=128)
+
     is_active = models.BooleanField(default=True)
-    last_active_at = models.DateTimeField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    date_joined = models.DateTimeField(auto_now_add=True)
-    is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    date_joined = models.DateTimeField(auto_now_add=True)
+
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+
+    objects = UserManager()
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["first_name", "last_name", "role"]
 
     def __str__(self):
         return self.email
+
     
 
 # TODO
