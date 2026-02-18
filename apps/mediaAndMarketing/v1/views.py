@@ -41,6 +41,11 @@ class CampaignDocumentCreateView(CreateAPIView):
     serializer_class = CampaignDocumentSerializer
     permission_classes = [IsAuthenticated]
 
+class CampaignDocumentListView(ListAPIView):
+    queryset = CampaignDocument.objects.all()
+    serializer_class = CampaignDocumentSerializer
+    permission_classes = [IsAuthenticated]
+
 class CampaignChannelCreateView(CreateAPIView):
     serializer_class = CampaignChannelSerializer
     permission_classes = [IsAuthenticated]
@@ -75,7 +80,17 @@ class VideoContentCreateView(CreateAPIView):
     serializer_class = VideoContentSerializer
     permission_classes = [IsAuthenticated]
 
+class VideoContentListView(ListAPIView):
+    queryset = VideoContent.objects.all()
+    serializer_class = VideoContentSerializer
+    permission_classes = [IsAuthenticated]
+
 class MediaAssetCreateView(CreateAPIView):
+    serializer_class = MediaAssetSerializer
+    permission_classes = [IsAuthenticated]
+
+class MediaAssetListView(ListAPIView):
+    queryset = MediaAsset.objects.all()
     serializer_class = MediaAssetSerializer
     permission_classes = [IsAuthenticated]
 
@@ -85,7 +100,7 @@ class ContentTagCreateView(CreateAPIView):
 
 class SocialChannelListView(ListAPIView):
     queryset = SocialChannel.objects.all()
-    serializer_class = SocialChannelSerializer
+    serializer_class = SocialChannelListSerializer
     permission_classes = [IsAuthenticated]
 
 class SocialChannelCreateView(CreateAPIView):
@@ -93,6 +108,11 @@ class SocialChannelCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]
 
 class SocialPostCreateView(CreateAPIView):
+    serializer_class = SocialPostSerializer
+    permission_classes = [IsAuthenticated]
+
+class SocialPostListView(ListAPIView):
+    queryset = SocialPost.objects.all()
     serializer_class = SocialPostSerializer
     permission_classes = [IsAuthenticated]
 

@@ -21,10 +21,16 @@ class CampaignPerformanceMetricSerializer(serializers.ModelSerializer):
 
 class CampaignDocumentSerializer(serializers.ModelSerializer):
     uploaded_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    file_url = serializers.SerializerMethodField()
 
     class Meta:
         model = CampaignDocument
         fields = "__all__"
+
+    def get_file_url(self, obj):
+        if obj.file:
+            return obj.file.url
+        return None
 
 class CampaignChannelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,16 +56,29 @@ class BlogPostContentSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class VideoContentSerializer(serializers.ModelSerializer):
+    video_url = serializers.SerializerMethodField()
+
     class Meta:
         model = VideoContent
         fields = "__all__"
 
+    def get_video_url(self, obj):
+        if obj.video:
+            return obj.video.url
+        return None
+
 class MediaAssetSerializer(serializers.ModelSerializer):
     uploaded_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    file_url = serializers.SerializerMethodField()
 
     class Meta:
         model = MediaAsset
         fields = "__all__"
+
+    def get_file_url(self, obj):
+        if obj.file:
+            return obj.file.url
+        return None
 
 class ContentTagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -70,6 +89,11 @@ class SocialChannelSerializer(serializers.ModelSerializer):
     class Meta:
         model = SocialChannel
         fields = "__all__"
+
+class SocialChannelListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SocialChannel
+        exclude = ['access_token']
 
 class SocialPostSerializer(serializers.ModelSerializer):
     class Meta:

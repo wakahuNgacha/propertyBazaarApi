@@ -28,10 +28,17 @@ class PropertyLocationSerializer(serializers.ModelSerializer):
 # property media
 
 class PropertyMediaSerializer(serializers.ModelSerializer):
+    file_url = serializers.SerializerMethodField()
+
     class Meta:
         model = PropertyMedia
         fields = "__all__"
         read_only_fields = ["property", "uploaded_at"]
+
+    def get_file_url(self, obj):
+        if obj.file:
+            return obj.file.url
+        return None
 
 # property land 
 
@@ -70,15 +77,29 @@ class ProjectSerializer(serializers.ModelSerializer):
 # property features and amenities 
 
 class FeatureSerializer(serializers.ModelSerializer):
+    icon_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Feature
         fields = "__all__"
 
+    def get_icon_url(self, obj):
+        if obj.icon:
+            return obj.icon.url
+        return None
+
 
 class AmenitySerializer(serializers.ModelSerializer):
+    icon_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Amenity
         fields = "__all__"
+
+    def get_icon_url(self, obj):
+        if obj.icon:
+            return obj.icon.url
+        return None
 
 class PropertyFeatureSerializer(serializers.ModelSerializer):
     feature = FeatureSerializer(read_only=True)

@@ -49,7 +49,7 @@ class CampaignPerformanceMetric(models.Model):
     
 class CampaignDocument(models.Model):
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='documents')
-    file = models.URLField()
+    file = models.FileField(upload_to='campaign_documents/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
     uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='campaign_documents_uploaded')
 
@@ -102,7 +102,7 @@ class BlogPostContent(models.Model):
     
 class VideoContent(models.Model):
     content = models.OneToOneField(Content, on_delete=models.CASCADE, related_name='video_content')
-    video_url = models.URLField()
+    video = models.FileField(upload_to='video_content/')
     duration_seconds = models.IntegerField()
     # views = models.IntegerField(default=0)
     # likes = models.IntegerField(default=0)
@@ -120,7 +120,7 @@ class MediaAsset(models.Model):
     ]
     content = models.ForeignKey(Content, on_delete=models.CASCADE, related_name='media_assets')
     asset_type = models.CharField(max_length=20, choices=ASSET_TYPE_CHOICES)
-    file_url = models.URLField()
+    file = models.FileField(upload_to='media_assets/')
     description = models.TextField(null=True, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='media_assets_uploaded')

@@ -56,12 +56,10 @@ class PropertyMediaCreateView(CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(property_id=self.kwargs["property_id"])
 
-class PropertyMediaCreateView(CreateAPIView):
+class PropertyMediaListView(ListAPIView):
+    queryset = PropertyMedia.objects.all()
     serializer_class = PropertyMediaSerializer
     permission_classes = [IsAuthenticated]
-
-    def perform_create(self, serializer):
-        serializer.save(property_id=self.kwargs["property_id"])
 
 class LandCreateUpdateView(CreateAPIView, UpdateAPIView):
     serializer_class = LandSerializer

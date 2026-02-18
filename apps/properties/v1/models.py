@@ -62,7 +62,7 @@ class Property(models.Model):
 # like parking, wifi, cctv
 class Feature(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    icon  = models.URLField()
+    icon  = models.FileField(upload_to='feature_icons/')
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -72,7 +72,7 @@ class Feature(models.Model):
 # like church market
 class Amenity(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    icon  = models.URLField()
+    icon  = models.FileField(upload_to='amenity_icons/')
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -117,7 +117,7 @@ class PropertyMedia(models.Model):
 
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='media')
     media_type = models.CharField(max_length=20, choices=MEDIA_TYPE_CHOICES)
-    url = models.URLField()
+    file = models.FileField(upload_to='property_media/')
     description = models.TextField(blank=True, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     is_cover = models.BooleanField(default=False)

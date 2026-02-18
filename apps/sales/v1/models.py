@@ -169,7 +169,7 @@ class SaleClosure (models.Model):
     lose_reason = models.TextField()
     payment_status = models.CharField(max_length=30, choices=PAYMENT_STATUS_CHOICES)
     documents_completed = models.BooleanField()
-    document = models.URLField()
+    document = models.FileField(upload_to='sale_closure_documents/')
     created_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User,on_delete=models.CASCADE)
     updated_at = models.DateTimeField(auto_now=True)
