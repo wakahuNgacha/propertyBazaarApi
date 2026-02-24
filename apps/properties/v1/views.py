@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import Property, Feature, Amenity, PropertyFeatures, PropertyAmenities
 from .serializers import *
 
@@ -14,6 +14,7 @@ class PropertyListView(ListAPIView):
         .prefetch_related("location", "media")
     )
     serializer_class = PropertyListSerializer
+    permission_classes = [AllowAny]
 
 class PropertyDetailView(RetrieveAPIView):
     queryset = (

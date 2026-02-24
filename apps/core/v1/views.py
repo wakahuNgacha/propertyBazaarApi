@@ -4,7 +4,7 @@ from rest_framework.generics import (
     RetrieveAPIView,
     UpdateAPIView
 )
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import PropertyType, PropertyUse, Channel, RelationshipStatus, Tag
 from .serializers import (
     PropertyTypeSerializer,
@@ -19,7 +19,7 @@ from .serializers import (
 class PropertyTypeListView(ListAPIView):
     queryset = PropertyType.objects.all()
     serializer_class = PropertyTypeSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 
 class PropertyTypeCreateView(CreateAPIView):
@@ -45,7 +45,7 @@ class PropertyTypeUpdateView(UpdateAPIView):
 class PropertyUseListView(ListAPIView):
     queryset = PropertyUse.objects.all()
     serializer_class = PropertyUseSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 
 class PropertyUseCreateView(CreateAPIView):

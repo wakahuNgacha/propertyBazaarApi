@@ -148,7 +148,7 @@ class Building(models.Model):
     bedrooms = models.IntegerField()
     bathrooms = models.IntegerField()
     parking_spaces = models.IntegerField()
-    year_built = models.IntegerField(blank=True, null=True)
+    year_built = models.DateField(blank=True, null=True)
     construction_status = models.CharField(max_length=100, choices=CONSTRUCTION_STATUS_CHOICES)
 
     def __str__(self):
@@ -166,7 +166,7 @@ class Project(models.Model):
     payment_plans_availability = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name
+        return self.property.title
 
 class ProjectUnit(models.Model):
     UNIT_STATUS_CHOICES = [

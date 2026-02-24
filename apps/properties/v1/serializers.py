@@ -71,6 +71,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = "__all__"
+        read_only_fields = ["property"]
 
 
 
@@ -132,13 +133,13 @@ class PropertyAmenitySerializer(serializers.ModelSerializer):
 class PropertyTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PropertyType
-        fields = ["id", "name", "slug"]
+        fields = ["id", "name"]
 
 
 class PropertyUseSerializer(serializers.ModelSerializer):
     class Meta:
         model = PropertyUse
-        fields = ["id", "name", "slug"]
+        fields = ["id", "name"]
 
 
 # property

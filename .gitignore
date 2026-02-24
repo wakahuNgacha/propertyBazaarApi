@@ -4,3 +4,4 @@ venv
 __pycache__/
 amenity_icons
 feature_icons
+property_media/
