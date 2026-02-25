@@ -93,8 +93,7 @@ class ProjectUnitCreateView(CreateAPIView):
 class FeatureListView(ListAPIView):
     queryset = Feature.objects.all()
     serializer_class = FeatureSerializer
-    permission_classes = [IsAuthenticated]
-
+    permission_classes = [AllowAny]
 
 class FeatureCreateView(CreateAPIView):
     serializer_class = FeatureSerializer
@@ -104,7 +103,7 @@ class FeatureCreateView(CreateAPIView):
 class AmenityListView(ListAPIView):
     queryset = Amenity.objects.all()
     serializer_class = AmenitySerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 
 class AmenityCreateView(CreateAPIView):
